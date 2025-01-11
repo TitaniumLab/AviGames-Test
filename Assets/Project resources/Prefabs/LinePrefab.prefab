@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6779213100433107670}
   - component: {fileID: 2804580209016735691}
   - component: {fileID: 4915104829377252423}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LinePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1880117768207732494}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.87, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -78,10 +78,10 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 10, y: 0, z: 0}
+  - {x: 0, y: 1, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.9884981
@@ -90,7 +90,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 1
-        value: 0.4
+        value: 0.2
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -154,10 +154,10 @@ EdgeCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -178,8 +178,8 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -2.8025303, y: 0.031713545}
-  - {x: 1.4725304, y: 0.71828645}
+  - {x: 0, y: 0}
+  - {x: 0, y: 1}
   m_AdjacentStartPoint: {x: 0, y: 1}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
@@ -199,5 +199,5 @@ MonoBehaviour:
   _startConnection: {fileID: 0}
   _endConnection: {fileID: 0}
   _indent: 0.2
-  _nonoverlapped: {fileID: 0}
-  _overlapped: {fileID: 0}
+  _nonOverlappedMat: {fileID: 2100000, guid: 5ba2406345781b14089f2d7ea3134745, type: 2}
+  _overlappedMat: {fileID: 2100000, guid: 481224e08942bd24eb3ffea2297ed84f, type: 2}

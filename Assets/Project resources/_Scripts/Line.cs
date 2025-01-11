@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AviGames
@@ -9,18 +10,36 @@ namespace AviGames
     {
         private EdgeCollider2D _collider;
         private LineRenderer _renderer;
-        [SerializeField] private Transform _startConnection;
-        [SerializeField] private Transform _endConnection;
+        [SerializeField] private Knot _startConnection;
+        [SerializeField] private Knot _endConnection;
+        private Transform _startTransform, _endTransform;
         [SerializeField] private float _indent;
-        [SerializeField] private Material _nonOverlapped;
-        [SerializeField] private Material _overlapped;
+        [SerializeField] private Material _nonOverlappedMat;
+        [SerializeField] private Material _overlappedMat;
+        private ContactFilter2D _filter;
+        private static List<Line> _lines = new List<Line>();
+        private bool _isOverlaped;
+
 
 
         private void Awake()
         {
             _collider = GetComponent<EdgeCollider2D>();
             _renderer = GetComponent<LineRenderer>();
+            _startTransform = _startConnection.transform;
+            _endTransform = _endConnection.transform;
+
+            _startConnection.OnDragging += SetLine;
+            _endConnection.OnDragging += SetLine;
+            Knot.OnRelease += SetLine;
+            Knot.OnRelease += CheckOverlap;
+
+            _filter.SetLayerMask(1 << gameObject.layer);
+            _filter.useLayerMask = true;
+            _lines.Add(this);
+
             SetLine();
+            CheckOverlap();
         }
 
 
@@ -28,6 +47,8 @@ namespace AviGames
         {
             if (_startConnection && _endConnection)
             {
+                _startTransform = _startConnection.transform;
+                _endTransform = _endConnection.transform;
                 _renderer = GetComponent<LineRenderer>();
                 _collider = GetComponent<EdgeCollider2D>();
                 SetLine();
@@ -35,27 +56,55 @@ namespace AviGames
         }
 
 
-        private void FixedUpdate()
+        private void OnDestroy()
         {
-            SetLine();
-            List<Collider2D> results = new List<Collider2D>();
-            Physics2D.OverlapCollider(_collider, results);
-            if (results.Count > 0)
+            _startConnection.OnDragging -= SetLine;
+            _endConnection.OnDragging -= SetLine;
+            Knot.OnRelease -= CheckOverlap;
+            Knot.OnRelease -= SetLine;
+            if (_lines.Count > 0)
             {
-                Debug.Log("AAAAAAAAAA");
+                _lines.Clear();
             }
         }
 
 
         private void SetLine()
         {
-            var mid = (_endConnection.position + _startConnection.position) / 2;
-            float halfLenth = (_startConnection.position - mid).magnitude;
-            var start = (_startConnection.position - mid).normalized * (halfLenth - _indent) + mid;
-            var end = (_endConnection.position - mid).normalized * (halfLenth - _indent) + mid;
+            var dir = _endTransform.position - _startTransform.position;
+            var start = _startTransform.position + dir.normalized * _indent;
+            var end = _endTransform.position - dir.normalized * _indent;
             _renderer.SetPosition(0, start);
             _renderer.SetPosition(1, end);
             _collider.points = new Vector2[] { start, end };
+        }
+
+
+        private void CheckOverlap()
+        {
+
+            List<Collider2D> results = new List<Collider2D>();
+            Physics2D.OverlapCollider(_collider, _filter, results);
+            if (results.Count > 0)
+            {
+                _renderer.material = _overlappedMat;
+                _isOverlaped = true;
+            }
+            else
+            {
+                _renderer.material = _nonOverlappedMat;
+                _isOverlaped = false;
+            }
+        }
+
+
+        public static bool CheckPuzzleSolved()
+        {
+            if (_lines.All(line => !line._isOverlaped))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
